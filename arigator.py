@@ -5,12 +5,13 @@ from prettytable import PrettyTable
 import argparse
 import colorama
 
+
 parser = argparse.ArgumentParser(description="Japanese translator.")
 parser.add_argument("-t", "--target", required=False, help="Target File containing lists of phrases", metavar="")
 args = parser.parse_args()
 target = args.target
 
-word_table = PrettyTable(["English", "Japanese", "Pronunciation"])
+word_table = PrettyTable(["Source", "Translation", "Pronunciation"])
 
 
 def main():
@@ -31,7 +32,14 @@ def main():
 
 def translator(target):
     translator = Translator()
-    translations = translator.translate(target, dest="ja")
+    source = translator.detect(target)
+
+    if source.lang == "ja":
+        dest = "en"
+    elif source.lang == "en":
+        dest = "ja"
+    translations = translator.translate(target, dest=dest)
+
     word_table.add_row([translations.origin, translations.text, translations.pronunciation])
     
 
