@@ -23,11 +23,13 @@ def main():
                 translator(line)
                 prog_bar(index + 1, len(phrases))
             print(colorama.Fore.RESET)
+            print(word_table)
     else:
-        word = input("Enter word/phrase: ")
-        translator(word)
-    print("\nResults:")
-    print(word_table)
+        while True:
+            word = input("Enter word/phrase: ")
+            translator(word)
+            print(word_table)
+    
     
 
 def translator(target):
@@ -35,13 +37,12 @@ def translator(target):
     source = translator.detect(target)
 
     if source.lang == "ja":
-        dest = "en"
+        translations = translator.translate(target, dest="en")
+        pronunciation = translator.translate(translations.text, dest="ja")
+        word_table.add_row([translations.origin, translations.text, pronunciation.pronunciation])
     elif source.lang == "en":
-        dest = "ja"
-    translations = translator.translate(target, dest=dest)
-
-    word_table.add_row([translations.origin, translations.text, translations.pronunciation])
-    
+        translations = translator.translate(target, dest="ja")
+        word_table.add_row([translations.origin, translations.text, translations.pronunciation])
 
 
 def prog_bar(progress, total, color=colorama.Fore.YELLOW):
